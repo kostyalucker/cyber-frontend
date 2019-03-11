@@ -1,7 +1,7 @@
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux'
 
-import count from './count';
+import createObject from './createObj'
 
 export default combineReducers({
-  count
-});
+  createObject
+})
