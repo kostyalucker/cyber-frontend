@@ -15,10 +15,6 @@ const state = {
   matches: null
 }
 
-getMatches.then(res => {
-  state.matches = res
-})
-
 server.get('/sse', (req, res) => {
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
@@ -39,22 +35,27 @@ server.get('/sse', (req, res) => {
   })
 })
 
-server.listen(8080, () => {
-  console.log('Listen on port 8080...')
+server.get('/matches', async (req, res) => {
+  await getMatches.then(matches => {
+    res.send(matches)
+  })
 })
 
-setInterval(() => {
-  emitter.emit('push', 'likess', {
+server.listen(8080)
+
+const intervalTime = 300000
+
+async function sendData() {
+  await getMatches.then(res => {
+    state.matches = res
+  })
+  await emitter.emit('push', 'matches', {
     value: state.matches
   })
-}, 5000)
+}
 
-// setTimeout(() => {
-//   setInterval(() => {
-//     state.comments += Math.floor(Math.random() * 10) + 1;
+sendData()
 
-//     emitter.emit('push', 'comments', {
-//       value: state.comments,
-//     });
-//   }, 10000);
-// }, 1000);
+setInterval(() => {
+  sendData()
+}, intervalTime)
