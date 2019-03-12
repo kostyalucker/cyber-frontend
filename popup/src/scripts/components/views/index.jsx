@@ -1,4 +1,5 @@
 import React from 'react'
+import { SSEProvider } from 'react-hooks-sse'
 import { ThemeProvider } from 'styled-components'
 
 import Head from '../partials/head'
@@ -18,7 +19,9 @@ class View extends React.Component {
       <ThemeProvider theme={theme}>
         <ViewWrap>
           <Head />
-          <Body />
+          <SSEProvider endpoint="http://localhost:8080/sse">
+            <Body />
+          </SSEProvider>
         </ViewWrap>
       </ThemeProvider>
     )

@@ -4,7 +4,9 @@ const getMatches = async () => {
   try {
     const browser = await puppeteer.launch({ headless: false })
     const page = await browser.newPage()
-    await page.goto('https://dota2.ru/esport/matches/')
+    await page.goto('https://dota2.ru/esport/matches/', {
+      waitUntil: 'networkidle2'
+    })
 
     const selector =
       '.esport-match .esport-match-single .team-vs-team .status .score-cup'
@@ -37,4 +39,17 @@ const getMatches = async () => {
   }
 }
 
-export default getMatches()
+// const main = async () => {
+//   let data = 'pid'
+//   await (() => {
+//     data = {}
+//   })
+//   const some = await (() => {
+//     data = {id: 2}
+
+//     return data
+//   })
+
+//   return some()
+// }
+module.exports = getMatches()

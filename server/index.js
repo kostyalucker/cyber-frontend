@@ -1,49 +1,60 @@
-const http = require('http')
-const SSE = require('sse')
+const EventEmitter = require('events')
+const cors = require('cors')
+const uuid = require('uuid')
+const express = require('express')
+const getMatches = require('./scrape')
 
-const port = 4000
+const server = express()
+const emitter = new EventEmitter()
 
-function onDigits(req, res) {
-  res.writeHead(200, {
-    'Content-Type': 'text/event-stream; charset=utf-8',
-    'Cache-Control': 'no-cache',
-    'Access-Control-Allow-Origin': '*'
-  })
+server.use(cors())
 
-  let i = 0
-  const timer = setInterval(write, 4000)
-
-  function write() {
-    i += 1
-
-    if (i === 4) {
-      res.write('event: bye\ndata: до свидания\n\n')
-      clearInterval(timer)
-      res.end()
-      return
-    }
-
-    res.write(`data: ${i}\n\n`)
-  }
-
-  write()
+const state = {
+  likes: 10,
+  comments: 3,
+  matches: null
 }
 
-function accept(req, res) {
-  onDigits(req, res)
-}
-
-const server = http.createServer(accept)
-
-server.listen(port, err => {
-  if (err) {
-    console.log(err)
-  }
-
-  const sse = new SSE(server)
-  sse.on('connection', function(client) {
-    client.send('hi')
-  })
-
-  console.log(`you on port ${port}`)
+getMatches.then(res => {
+  state.matches = res
 })
+
+server.get('/sse', (req, res) => {
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    Connection: 'keep-alive'
+  })
+
+  const listener = (event, data) => {
+    res.write(`id: ${uuid.v4()}\n`)
+    res.write(`event: ${event}\n`)
+    res.write(`data: ${JSON.stringify(data)}\n\n`)
+  }
+
+  emitter.addListener('push', listener)
+
+  req.on('close', () => {
+    emitter.removeListener('push', listener)
+  })
+})
+
+server.listen(8080, () => {
+  console.log('Listen on port 8080...')
+})
+
+setInterval(() => {
+  emitter.emit('push', 'likess', {
+    value: state.matches
+  })
+}, 5000)
+
+// setTimeout(() => {
+//   setInterval(() => {
+//     state.comments += Math.floor(Math.random() * 10) + 1;
+
+//     emitter.emit('push', 'comments', {
+//       value: state.comments,
+//     });
+//   }, 10000);
+// }, 1000);
