@@ -3,6 +3,7 @@ const cors = require('cors')
 const uuid = require('uuid')
 const express = require('express')
 const getMatches = require('./scrape')
+const saveFile = require('./save')
 
 const server = express()
 const emitter = new EventEmitter()
@@ -39,6 +40,7 @@ server.get('/matches', async (req, res) => {
   await getMatches.then(matches => {
     res.send(matches)
   })
+  saveFile()
 })
 
 server.listen(8080)
