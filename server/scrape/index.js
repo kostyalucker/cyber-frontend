@@ -5,8 +5,7 @@ const getMatches = async () => {
     const browser = await puppeteer.launch({ headless: true })
     const page = await browser.newPage()
     await page.goto('https://dota2.ru/esport/matches/', {
-      waitUntil: 'networkidle2',
-      timeout: 0
+      waitUntil: 'networkidle2'
     })
 
     const selector =
