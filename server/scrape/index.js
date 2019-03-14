@@ -1,5 +1,30 @@
 const puppeteer = require('puppeteer')
 
+const matchSchema = {
+  date: {
+    time: String, // 12:30
+    day: String // 24.02
+  },
+  result: null || String, // null || 23 : 1
+  status: String, // null || 23 : 1
+  event: String, // The International,
+  team_one: {
+    name: String, // NaVi
+    logo: String, // some.ru/image.jpg
+    link: String, // aboutnavi.ru
+    bet: String // 2
+  },
+  team_two: {
+    name: String, // VP
+    logo: String, // some.ru/image2.jpg
+    link: String, // aboutvp.ru
+    bet: String // 3.5
+  },
+  stream_link: String || null // twitch.tv/match_id || null
+}
+
+console.log(matchSchema)
+
 // TODO: fix timeout error
 const getMatches = async () => {
   try {
