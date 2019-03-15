@@ -46,13 +46,17 @@ const getMatches = async () => {
     const result = await page.evaluate(() => {
       const data = []
       const elements = document.querySelectorAll(
-        '.esport-match .esport-match-single .team-vs-team .status .match-shop-result'
+        '.esport-match .esport-match-single .team-vs-team'
       ) // Select all Products
-
       for (const element of elements) {
-        const title = element.innerHTML
+        const score = element.querySelector('.status .match-shop-result')
 
-        data.push({ title })
+        // const team_one = element.querySelector('.team-left .name').innerHTML
+        if (score) {
+          const title = score.innerHTML
+
+          data.push({ title })
+        }
       }
 
       return data
