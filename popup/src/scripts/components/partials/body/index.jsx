@@ -30,6 +30,8 @@ function body() {
         return res.json()
       })
       .then(res => {
+        // Notification.requestPermission()
+        // var e = new Notification('hello')
         setEvents(res)
       })
   }
@@ -37,6 +39,19 @@ function body() {
   if (!events) {
     getData()
   }
+
+  // var icon_url = 'icon.png';
+  // console.log(icon_url);
+
+  // var opt = {
+  //   type: 'basic',
+  //   title: 'keep burning',
+  //   message: 'Primary message to display',
+  //   priority: 1,
+  //   iconUrl: icon_url
+  // };
+
+  // chrome.notifications.create('hello', opt, function() { console.log(chrome.runtime) })
 
   return (
     <StyledBody>
