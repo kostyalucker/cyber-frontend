@@ -8,7 +8,7 @@ const state = {
   comments: 3,
   matches: null
 }
-const intervalTime = 30000
+const intervalTime = 5000
 
 function routes(app) {
   app.get('/sse', (req, res) => {
@@ -25,6 +25,7 @@ function routes(app) {
     }
 
     emitter.addListener('push', listener)
+    emitter.addListener('message', listener)
 
     req.on('close', () => {
       emitter.removeListener('push', listener)
@@ -34,17 +35,21 @@ function routes(app) {
   // interval for emit push data matches
   async function sendData() {
     await getMatches.then(res => {
+      console.log(res)
       state.matches = res
     })
-    await emitter.emit('push', 'matches', {
-      value: state.matches
-    })
+    // await emitter.emit('push', 'matches', {
+    //   value: state.matches
+    // })
   }
 
   sendData()
 
   setInterval(() => {
     sendData()
+    // emitter.emit('message', 'message', {
+    //   value: state.matches
+    // })
   }, intervalTime)
 
   app.get('/matches', async (req, res) => {
