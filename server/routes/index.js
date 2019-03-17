@@ -34,29 +34,27 @@ function routes(app) {
 
   // interval for emit push data matches
   async function sendData() {
-    // await getMatches.then(res => {
-    //   console.log(res)
-    //   state.matches = res
-    // })
-    // await emitter.emit('push', 'matches', {
-    //   value: state.matches
-    // })
+    await getMatches().then(res => {
+      state.matches = res
+    })
+    await emitter.emit('push', 'matches', {
+      value: state.matches
+    })
   }
 
   sendData()
 
   setInterval(() => {
-    // sendData()
-    getMatches()
-    // emitter.emit('message', 'message', {
-    //   value: state.matches
-    // })
+    sendData()
+    emitter.emit('message', 'message', {
+      value: state.matches
+    })
   }, intervalTime)
 
   app.get('/matches', async (req, res) => {
-    // await getMatches.then(matches => {
-    //   res.send(matches)
-    // })
+    await getMatches.then(matches => {
+      res.send(matches)
+    })
   })
 }
 
