@@ -6,32 +6,34 @@ import {
   Teams,
   Center,
   EventDate,
-  Score,
-  Bet
+  Score
 } from './styles'
 import Team from './team'
 import { Flex } from '../../../ui/utils'
+import { IMG_URL } from '../../../../constants'
 
-function Game() {
+function Game(props) {
+  const { data } = props
   return (
     <GameWrap>
-      <Event justify="center">
-        <span>The International</span>
-      </Event>
+      {data.event.name && (
+        <Event justify="center">
+          <span>{data.event.name}</span>
+        </Event>
+      )}
       <Flex align="center">
-        <GameIcon />
+        {data.event.logo && <GameIcon background={IMG_URL + data.event.logo} />}
         <Teams align="center">
-          <Team />
+          <Team data={data.team_one} />
           <Center>
-            <EventDate>
-              <p>24.02</p>
-              <p>18:00</p>
-            </EventDate>
-            <Score />
+            {data.date && <EventDate>{data.date}</EventDate>}
+            {data.live && <EventDate>{data.live}</EventDate>}
+            {data.timer && <EventDate>{data.timer}</EventDate>}
+            {data.score && <Score>{data.score}</Score>}
           </Center>
-          <Team second />
+          <Team second data={data.team_two} />
         </Teams>
-        <Bet>Bet</Bet>
+        {/* <Bet>Bet</Bet> */}
       </Flex>
     </GameWrap>
   )

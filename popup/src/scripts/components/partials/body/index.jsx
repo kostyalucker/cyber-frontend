@@ -1,83 +1,51 @@
-import React, { useState } from 'react'
-import { useSSE } from 'react-hooks-sse'
-import { List, Item, StyledBody } from './styles'
+import React from 'react'
+import { connect } from 'react-redux'
+import { List, Item, StyledBody, SectionTitle } from './styles'
 import Game from './game'
 
-function body() {
-  const [events, setEvents] = useState(null)
-  /* eslint-disable-next-line */
-  const state = useSSE('matches', {
-    initialState: {
-      matches: null,
-      lastChange: null
-    },
-    stateReducer(prevState, changes) {
-      setEvents(changes.data.value)
-      return {
-        matches: changes.data.value,
-        lastChange:
-          prevState.matches !== null
-            ? changes.data.value - prevState.matches
-            : null
-      }
-    }
-  })
-
-  function getData() {
-    /* eslint-disable-next-line */
-    fetch('http://localhost:8080/matches')
-      .then(res => {
-        return res.json()
-      })
-      .then(res => {
-        // Notification.requestPermission()
-        // var e = new Notification('hello')
-        setEvents(res)
-      })
+let counter = 0
+function body(props) {
+  const { matches } = props
+  let pastMatches = []
+  let currentMatches = []
+  if (matches && matches.length > 0) {
+    pastMatches = matches.filter(match => match.past)
+    currentMatches = matches.filter(match => !match.past)
   }
-
-  if (!events) {
-    getData()
-  }
-
-  // var icon_url = 'icon.png';
-  // console.log(icon_url);
-
-  // var opt = {
-  //   type: 'basic',
-  //   title: 'keep burning',
-  //   message: 'Primary message to display',
-  //   priority: 1,
-  //   iconUrl: icon_url
-  // };
-
-  // chrome.notifications.create('hello', opt, function() { console.log(chrome.runtime) })
-
+  counter += 1
   return (
     <StyledBody>
-      {events &&
-        events.map(el => {
-          return <p>{el.title}</p>
-        })}
+      {counter}
       <List>
-        <Item>
-          <Game />
-        </Item>
-        <Item>
-          <Game />
-        </Item>
-        <Item>
-          <Game />
-        </Item>
-        <Item>
-          <Game />
-        </Item>
-        <Item>
-          <Game />
-        </Item>
+        {currentMatches &&
+          currentMatches.map(event => {
+            return (
+              <Item>
+                <Game data={event} />
+              </Item>
+            )
+          })}
       </List>
+      {pastMatches && pastMatches.length > 0 && (
+        <React.Fragment>
+          <SectionTitle>Прошедшие игры</SectionTitle>
+          <List>
+            {pastMatches.map(event => {
+              return (
+                <Item>
+                  <Game data={event} />
+                </Item>
+              )
+            })}
+          </List>
+        </React.Fragment>
+      )}
     </StyledBody>
   )
 }
 
-export default body
+export default connect(state => {
+  return {
+    matches: state.matches
+  }
+})(body)

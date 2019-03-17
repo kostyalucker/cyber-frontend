@@ -4,22 +4,35 @@ import { Flex } from '../../../ui/utils'
 export const GameWrap = styled.div``
 export const Event = styled(Flex)`
   align-items: center;
-  margin-bottom: 20px;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+  span {
+    display: block;
+    width: 326px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 `
 export const GameIcon = styled.div`
   flex-shrink: 0;
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  margin-right: 20px;
-  background: ${p => p.theme.gray};
+  margin-right: 10px;
+  background-color: ${p => p.theme.gray};
+  background: url(${p => p.background}) no-repeat center;
+  background-size: cover;
 `
 export const Teams = styled(Flex)`
   width: 100%;
   align-items: center;
   justify-content: space-between;
 `
-export const Center = styled.div``
+export const Center = styled.div`
+  text-align: center;
+`
 export const EventDate = styled.div``
 export const Score = styled.div``
 export const Bet = styled.div`
