@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { List, Item, StyledBody, SectionTitle } from './styles'
 import Game from './game'
 
-let counter = 0
 function body(props) {
   const { matches } = props
   let pastMatches = []
@@ -12,10 +11,9 @@ function body(props) {
     pastMatches = matches.filter(match => match.past)
     currentMatches = matches.filter(match => !match.past)
   }
-  counter += 1
+
   return (
     <StyledBody>
-      {counter}
       <List>
         {currentMatches &&
           currentMatches.map(event => {
