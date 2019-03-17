@@ -26,18 +26,21 @@ const puppeteer = require('puppeteer')
 // TODO: fix timeout error
 const getMatches = async () => {
   try {
-    const browser = await puppeteer.launch({ headless: false })
+    const browser = await puppeteer.launch({ headless: true })
     // const page = await browser.newPage()
     // await page.goto('https://dota2.ru/esport/matches/', {
     //   waitUntil: 'networkidle2'
     // })
     const secondPage = await browser.newPage()
-    await secondPage.goto('https://etherscan.io/', {
+    await secondPage.goto('https://www.flightradar24.com/60,15/6', {
       waitUntil: 'networkidle2'
     })
-    await secondPage.reload()
-    const hash = '.mCSB_container .media-body .hash-tag'
-    await secondPage.waitForSelector(hash)
+    // console.log(secondPage);
+    // await secondPage.reload()
+    const element = await secondPage.$("#menuPlanesValue");
+    const text = await secondPage.evaluate(element => element.textContent, element);
+    console.log(text)
+    // console.log(res);
     // const selector =
     //   '.esport-match .esport-match-single .team-vs-team .status .score-cup'
     // await page.waitForSelector(selector)
@@ -47,19 +50,19 @@ const getMatches = async () => {
     //   await page.click(selector)
     // }
 
-    const some = await secondPage.evaluate(() => {
-      // location.reload();
-      const d = document.querySelector(
-        '#mCSB_2_container .media .media-body .hash-tag'
-      )
-      // const arr = []
-      // for (const el of d) {
-      //   if (el) {
-      //     arr.push(el.innerHTML)
-      //   }
-      // }
-      return d.innerHTML
-    })
+    // const some = await secondPage.evaluate(() => {
+    //   // location.reload();
+    //   const d = document.querySelector(
+    //     '#mCSB_2_container .media .media-body .hash-tag'
+    //   )
+    //   // const arr = []
+    //   // for (const el of d) {
+    //   //   if (el) {
+    //   //     arr.push(el.innerHTML)
+    //   //   }
+    //   // }
+    //   return d.innerHTML
+    // })
     // const result = await page.evaluate(() => {
     //   const data = []
     //   const elements = document.querySelectorAll(
@@ -103,13 +106,13 @@ const getMatches = async () => {
     //   return data
     // })
 
-    await secondPage.waitFor(5000)
-    // await browser.close()
-    return some
+    // await secondPage.waitFor(5000)
+    await browser.close()
+    // return some
   } catch (err) {
     // console.log(err)
     return err
   }
 }
 
-module.exports = getMatches()
+module.exports = getMatches;
